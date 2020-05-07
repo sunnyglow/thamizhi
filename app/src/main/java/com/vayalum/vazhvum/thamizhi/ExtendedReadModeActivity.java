@@ -2,7 +2,9 @@ package com.vayalum.vazhvum.thamizhi;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -10,6 +12,9 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.vayalum.vazhvum.thamizhi.async.BrowserReadModeAsync;
 
 import static com.vayalum.vazhvum.thamizhi.MainActivity.textToSpeech;
@@ -20,7 +25,11 @@ public class ExtendedReadModeActivity extends AppCompatActivity {
     public static WebView readWebView = null;
     public static String webpage_text = "";
     private static int currentLine = 0;
+    String lines[];
     private boolean doNothing = false;
+    private AdView mAdView;
+    private InterstitialAd mInterstitialAd;
+    private CountDownTimer bannerTimer;
     ImageView play;
     ImageView pause;
     ImageView prev;
@@ -31,7 +40,7 @@ public class ExtendedReadModeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_extended_read_mode);
-
+        setUpdAdvertisements();
         play = (ImageView) findViewById(R.id.play);
         pause = (ImageView) findViewById(R.id.pause);
         prev = (ImageView) findViewById(R.id.prev);
@@ -55,9 +64,6 @@ public class ExtendedReadModeActivity extends AppCompatActivity {
         });
 
         next.setOnClickListener(v -> {
-            if (currentLine > 0) {
-                currentLine++;
-            }
             textToSpeech.stop();
         });
 
@@ -82,7 +88,7 @@ public class ExtendedReadModeActivity extends AppCompatActivity {
                 textToSpeech.stop();
                 speechStopped = false;
                 String texttoSpeak = BrowserReadModeAsync.clean_result;
-                String lines[] = texttoSpeak.split("(\\.|\\?|\\!)");
+                lines = texttoSpeak.split("(\\.\\s|\\?|\\!)");
                 currentLine = 0;
                 for (; currentLine < lines.length; ) {
                     if (speechStopped) {
@@ -96,12 +102,14 @@ public class ExtendedReadModeActivity extends AppCompatActivity {
                         currentLine++;
                     }
                 }
+
+                speechStopped = true;
             }
         }).start();
     }
 
     class TamilTTSWebViewClient extends WebViewClient {
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest requestl) {
             return true;
         }
     }
@@ -117,6 +125,35 @@ public class ExtendedReadModeActivity extends AppCompatActivity {
         speechStopped = true;
         if(textToSpeech != null && textToSpeech.isSpeaking()){
             textToSpeech.stop();
+        }
+    }
+
+    private void setUpdAdvertisements() {
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        bannerTimer = new CountDownTimer(10000, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                mAdView.loadAd(adRequest);
+                start();
+            }
+        }.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(textToSpeech == null){
+            MainActivity.initializeSpeechEngine();
         }
     }
 }

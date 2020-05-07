@@ -779,7 +779,7 @@ public class Element extends Node {
     /**
      * Find elements that have this class, including or under this element. Case insensitive.
      * <p>
-     * Elements can have multiple classes (e.g. {@code <div class="header round first">}. This method
+     * Elements can have multiple classes (e.g. {@code <div class="header round_icon first">}. This method
      * checks each class, so you can find the above with {@code el.getElementsByClass("header");}.
      * 
      * @param className the name of the class to search for.

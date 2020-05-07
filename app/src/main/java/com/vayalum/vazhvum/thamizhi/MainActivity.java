@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         final List<ApplicationInfo> appsInfo = this.getPackageManager().getInstalledApplications(0);
         for (final ApplicationInfo appInfo : appsInfo) {
-            System.out.println("Packages: " + appInfo.packageName);
+            //System.out.println("Packages: " + appInfo.packageName);
             if (appInfo.packageName.contains("com.google.android.tts")) {
                 tts_package_found = true;
             }
@@ -41,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onInit(int status) {
                     if (status == TextToSpeech.SUCCESS) {
+                        //textToSpeech.setEngineByPackageName("com.google.android.tts");
                         Set<Voice> voiceList = textToSpeech.getVoices();
                         for (Voice voice : voiceList) {
-                            Log.v("", "Voices available: " + voice.getName());
+                            //Log.v("", "Voices available: " + voice.getName());
                             if (voice.getName().startsWith("ta")) {
-                                Log.v("", "Voice available: " + voice.getName());
+                                //Log.v("", "Voice available: " + voice.getName());
                                 textToSpeech.setVoice(voice);
                                 voiceFound = true;
                                 break;
@@ -53,16 +54,18 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
-            });
+            }, "com.google.android.tts");
 
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            new Thread(()->{
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
+                startActivity(intent);
+            }).start();
 
-            Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
-            startActivity(intent);
         } else {
             installTTSPackage();
         }
@@ -86,5 +89,20 @@ public class MainActivity extends AppCompatActivity {
                         onBackPressed();
                     }
                 }).create().show();
+    }
+
+    public static void initializeSpeechEngine() {
+        if (textToSpeech != null) {
+            Set<Voice> voiceList = textToSpeech.getVoices();
+            for (Voice voice : voiceList) {
+                //Log.v("", "Voices available: " + voice.getName());
+                if (voice.getName().startsWith("ta")) {
+                    //Log.v("", "Voice available: " + voice.getName());
+                    textToSpeech.setVoice(voice);
+                    voiceFound = true;
+                    break;
+                }
+            }
+        }
     }
 }

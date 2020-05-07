@@ -95,7 +95,7 @@ public class ArticleTextExtractor {
     }
 
     /**
-     * @param html extracts article text from given html string. wasn't tested
+     * @param doc extracts article text from given html string. wasn't tested
      * with improper HTML, although jSoup should be able to handle minor stuff.
      * @returns extracted article, all HTML tags stripped
      */
@@ -147,21 +147,26 @@ public class ArticleTextExtractor {
                 maxWeight = currentWeight;
                 bestMatchElement = entry;
                 bestMatchStr = html2plainText.getPlainText(bestMatchElement);
-                if(!paragarph.contains(bestMatchStr)) {
+                String[] lines = bestMatchStr.split("\n");
+
+                for(int i = 0; i < lines.length; i++) {
+                    if(!paragarph.contains(lines[i])) {
+                        //bestMatchStr += bestMatchElement.toString()+"\n";
+                        paragarph.add(lines[i]);
+                    }
+                }
+                /*if(!paragarph.contains(bestMatchStr)) {
                     //bestMatchStr += bestMatchElement.toString()+"\n";
 
                     paragarph.add(bestMatchStr);
-                }
-
-                if (maxWeight > 200)
-                    break;
+                }*/
             }
         }
-
+        String finalString = "";
         for(int i = 0 ; i < paragarph.size(); i++) {
-            bestMatchStr += paragarph.get(i)+"\n";
+            finalString += paragarph.get(i)+"\n";
         }
-        res.setActualContent(bestMatchStr);
+        res.setActualContent(finalString);
         if (bestMatchElement != null) {
             List<ImageResult> images = new ArrayList<ImageResult>();
             Element imgEl = determineImageSource(bestMatchElement, images);

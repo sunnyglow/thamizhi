@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_gravity="center|top"
+    android:orientation="vertical"
     tools:context=".DashboardActivity">
 
     <LinearLayout
@@ -15,14 +15,14 @@
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
-            android:layout_gravity="top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_alignParentBottom="true"
+
             android:layout_centerHorizontal="true"
+            android:layout_gravity="top"
             app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-5540165822417974/9331167445">
+            app:adUnitId="@string/bannerid">
 
         </com.google.android.gms.ads.AdView>
     </LinearLayout>
@@ -33,7 +33,14 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
+            app:srcCompat="@drawable/appname_small" />
+        <!--<TextView
             android:id="@+id/story_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +48,7 @@
             android:paddingBottom="10dp"
             android:text="தமிழி"
             android:textColor="#3700B3"
-            android:textSize="50dp" />
+            android:textSize="50dp" />-->
 
     </LinearLayout>
 
@@ -54,8 +61,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:padding="30dp">
 
             <ImageView
@@ -210,4 +217,23 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/instruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_centerHorizontal="true"
+            android:textColor="#000000"
+            android:layout_margin="13.0dip"
+            android:textSize="15dp"
+            android:text="பயன்பாடு:\n1. இணைய பொத்தானை அழுத்தவும்.\n2. செய்தியோ, கதைகளோ, கட்டுரைகளையோ கொண்ட தமிழ் இணைய தளத்திறக்கு செல்லவும்.\n3. Listen Now பொத்தானை அழுத்தவும். \n4. பின்பு திரையில் இருக்கும் Media Control மூலம் ஒலியை கட்டுப்படுத்தவும்." />
+    </LinearLayout>
+
 </LinearLayout>

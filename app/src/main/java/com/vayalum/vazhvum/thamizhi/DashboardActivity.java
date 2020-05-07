@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
 
@@ -13,6 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.List;
 import java.util.Set;
@@ -24,13 +30,17 @@ public class DashboardActivity extends AppCompatActivity {
     Boolean voiceFound = false;
     ImageView browse_web;
     ImageView input;
-
+    private AdView mAdView;
+    private InterstitialAd mInterstitialAd;
+    private CountDownTimer bannerTimer;
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        setUpdAdvertisements();
         browse_web = findViewById(R.id.browse_web);
         browse_web.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,9 +86,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     }
 
-
-
-
     public void checkVoiceStatus() {
         Set<Voice> voiceList = textToSpeech.getVoices();
         for (Voice voice : voiceList) {
@@ -114,6 +121,46 @@ public class DashboardActivity extends AppCompatActivity {
                         onBackPressed();
                     }
                 }).create().show();
+    }
+
+    private void setUpdAdvertisements() {
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        bannerTimer = new CountDownTimer(10000, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                mAdView.loadAd(adRequest);
+                start();
+            }
+        }.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            finish();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 
 }
